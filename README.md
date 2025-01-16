@@ -1,46 +1,46 @@
-# REST API with Node.js + TypeScript + Express + Bun Runtime
+# 🚀 REST API with Node.js + TypeScript + Express + Bun Runtime
 
-A modern REST API built with Node.js, TypeScript, Express, and Bun runtime, featuring JWT authentication, Google OAuth2, and MongoDB integration.
+API ที่ทันสมัยสร้างด้วย Node.js, TypeScript, Express และ Bun runtime พร้อมระบบยืนยันตัวตนแบบ JWT, การเข้าสู่ระบบผ่าน Google และการจัดเก็บข้อมูลด้วย MongoDB
 
-## Features
+## ✨ คุณสมบัติเด่น
 
-- 🚀 Built with Bun runtime for superior performance
-- 🔐 JWT Authentication
-- 🔑 Google OAuth2 Integration
-- 📦 MongoDB Database
-- 🛡️ TypeScript for type safety
-- 🔒 Secure by default with various security middlewares
-- 📝 API Documentation with Swagger
-- 🚦 Request validation with Zod
-- 🔄 Refresh token mechanism
-- 📈 Rate limiting
-- 🛠️ Error handling middleware
-- 🌐 CORS enabled
-- 🚀 Ready for Vercel deployment
+- 🚀 ใช้ Bun runtime เพื่อประสิทธิภาพที่เหนือกว่า
+- 🔐 ระบบยืนยันตัวตนด้วย JWT
+- 🔑 รองรับการเข้าสู่ระบบผ่าน Google
+- 📦 ฐานข้อมูล MongoDB
+- 🛡️ TypeScript เพื่อความปลอดภัยในการเขียนโค้ด
+- 🔒 มาพร้อมระบบความปลอดภัยพื้นฐาน
+- 📝 เอกสาร API ด้วย Swagger
+- 🚦 ระบบจำกัดการเรียก API
+- 🔄 ระบบ Refresh token
+- 📈 บันทึกการใช้งาน API
+- 🛠️ จัดการข้อผิดพลาดอย่างเป็นระบบ
+- 🌐 รองรับ CORS
+- 🚀 พร้อมสำหรับการ Deploy บน Vercel
 
-## Prerequisites
+## 🔧 สิ่งที่ต้องมี
 
-- Bun runtime (latest version)
+- Bun runtime (เวอร์ชันล่าสุด)
 - Node.js 18+
-- MongoDB database
+- ฐานข้อมูล MongoDB
 - Google OAuth credentials
 
-## Installation
+## 📥 การติดตั้ง
 
-1. Clone the repository:
+1. Clone โปรเจค:
 
    ```bash
    git clone <repository-url>
    cd <project-directory>
    ```
 
-2. Install dependencies:
+2. ติดตั้ง Dependencies:
 
    ```bash
    bun install
    ```
 
-3. Create a `.env` file in the root directory and add your environment variables:
+3. สร้างไฟล์ `.env` และกำหนดค่าต่างๆ:
 
    ```env
    PORT=3000
@@ -53,103 +53,98 @@ A modern REST API built with Node.js, TypeScript, Express, and Bun runtime, feat
    GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
    ```
 
-## Development
+## 🏃‍♂️ การใช้งาน
 
-Start the development server:
+เริ่มต้น Development Server:
 
 ```bash
 bun run dev
 ```
 
-## Building for Production
-
-Build the project:
+## 🏗️ การ Build สำหรับ Production
 
 ```bash
 bun run build
 ```
 
-## Deployment to Vercel
+## 🌐 API Endpoints
 
-1. Install Vercel CLI:
+### 🔐 ระบบยืนยันตัวตน (Authentication)
 
-   ```bash
-   bun i -g vercel
-   ```
-
-2. Deploy to Vercel:
-
-   ```bash
-   vercel
-   ```
-
-## API Documentation
-
-Once the server is running, you can access the Swagger documentation at:
-
-```http://localhost:3000/api-docs```
-
-## API Endpoints
-
-### Authentication
-
-- POST `/api/auth/register` - Register a new user
+- 📝 `POST /api/auth/register` - ลงทะเบียนผู้ใช้ใหม่
   - Body: `{ email: string, password: string, name: string }`
-  - Response: `{ user: User }`
+  - ผลลัพธ์: `{ user: User }`
 
-- POST `/api/auth/login` - Login user
+- 🔑 `POST /api/auth/login` - เข้าสู่ระบบ
   - Body: `{ email: string, password: string }`
-  - Response: `{ accessToken: string, refreshToken: string }`
+  - ผลลัพธ์: `{ accessToken: string, refreshToken: string }`
 
-- GET `/api/auth/google` - Initiate Google OAuth login
-  - Redirects to Google login page
-
-- GET `/api/auth/google/callback` - Google OAuth callback
-  - Handles OAuth response
-  - Redirects to frontend with tokens
-
-- POST `/api/auth/refresh-token` - Refresh access token
+- 🔄 `POST /api/auth/refresh-token` - ต่ออายุ Token
   - Body: `{ refreshToken: string }`
-  - Response: `{ accessToken: string, refreshToken: string }`
+  - ผลลัพธ์: `{ accessToken: string, refreshToken: string }`
 
-- POST `/api/auth/logout` - Logout user
+- 🚪 `POST /api/auth/logout` - ออกจากระบบ
   - Headers: `Authorization: Bearer <token>`
-  - Response: `{ message: string }`
 
-### User Management
+### 👤 จัดการผู้ใช้ (User Management)
 
-- GET `/api/users/me` - Get current user profile
+- 📱 `GET /api/users/me` - ดูข้อมูลตัวเอง
   - Headers: `Authorization: Bearer <token>`
-  - Response: `User`
+  - ผลลัพธ์: `User`
 
-- PUT `/api/users/me` - Update current user profile
+- ✏️ `PUT /api/users/me` - แก้ไขข้อมูลตัวเอง
   - Headers: `Authorization: Bearer <token>`
   - Body: `{ name?: string, avatar?: string }`
-  - Response: `User`
 
-- GET `/api/users` - Get all users (Admin only)
+- 👥 `GET /api/users` - ดูรายชื่อผู้ใช้ทั้งหมด (สำหรับ Admin)
   - Headers: `Authorization: Bearer <token>`
-  - Response: `User[]`
 
-### System
+## 👑 การจัดการสิทธิ์ (Role Management)
 
-- GET `/api` - Welcome message
-  - Response: `{ status: string, message: string, version: string, docs: string }`
+### การตั้งค่า Admin คนแรก
 
-- GET `/api/health` - Health check
-  - Response: `{ status: string, message: string, timestamp: string }`
+1. ลงทะเบียนผู้ใช้ใหม่:
 
-## Security
+```bash
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@example.com",
+    "password": "your_password",
+    "name": "Admin User"
+  }'
+```
 
-This project implements several security measures:
+2. เปลี่ยนสิทธิ์เป็น Admin ผ่าน MongoDB Shell:
 
-- JWT token authentication
-- Password hashing
-- Rate limiting
-- CORS protection
-- Helmet security headers
-- Input validation
-- XSS protection
+```javascript
+use your_database_name
+db.users.updateOne(
+  { email: "admin@example.com" },
+  { $set: { role: "admin" } }
+)
+```
+
+### 🎭 ประเภทของสิทธิ์
+
+- 👤 `user`: สิทธิ์พื้นฐาน
+  - ดูและแก้ไขข้อมูลตัวเอง
+  - ใช้งานระบบยืนยันตัวตน
+
+- 👑 `admin`: สิทธิ์ทั้งหมด
+  - ดูรายชื่อผู้ใช้ทั้งหมด
+  - จัดการสิทธิ์ของผู้ใช้
+  - เข้าถึงฟีเจอร์พิเศษ
+
+## 🔒 ความปลอดภัย
+
+- 🔑 ยืนยันตัวตนด้วย JWT
+- 🔐 เข้ารหัสรหัสผ่านด้วย bcrypt
+- 🚦 จำกัดการเรียก API
+- 🛡️ ป้องกัน CORS
+- 🔰 Headers ความปลอดภัยด้วย Helmet
+- ✅ ตรวจสอบข้อมูลนำเข้า
+- 🛡️ ป้องกัน XSS
 
 ## Testing
 
@@ -361,3 +356,64 @@ MONGODB_URI=mongodb://localhost:27017/your_database
    - Find or create user in MongoDB
    - Generate JWT tokens
    - Return tokens
+
+## Role Management
+
+### Setting up First Admin User
+
+1. Register a new user through the API:
+
+```bash
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@example.com",
+    "password": "your_password",
+    "name": "Admin User"
+  }'
+```
+
+2. Use MongoDB Shell to promote the user to admin:
+
+```javascript
+use your_database_name
+db.users.updateOne(
+  { email: "admin@example.com" },
+  { $set: { role: "admin" } }
+)
+```
+
+### Managing User Roles via API
+
+After having an admin account, you can manage other users' roles through the API:
+
+```bash
+# Update user role (Admin only)
+PATCH /api/users/{userId}/role
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "role": "admin"  # or "user"
+}
+```
+
+### Role Types
+
+- `user`: Default role, limited access
+- `admin`: Full access, can:
+  - View all users
+  - Manage user roles
+  - Access admin-only endpoints
+
+### Role-based Access Control
+
+- Regular users can only:
+  - View their own profile
+  - Update their own profile
+  - Use authentication endpoints
+
+- Admin users can additionally:
+  - View all users (`GET /api/users`)
+  - Change user roles (`PATCH /api/users/{userId}/role`)
+  - Access future admin-only features

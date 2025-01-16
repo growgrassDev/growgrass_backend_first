@@ -34,6 +34,18 @@ export class UserController {
       next(error);
     }
   }
+
+  async updateUserRole(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.params;
+      const { role } = req.body;
+      
+      const user = await userService.updateUserRole(userId, role);
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const userController = new UserController(); 

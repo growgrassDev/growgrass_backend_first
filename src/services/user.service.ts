@@ -27,6 +27,24 @@ export class UserService {
   async getAllUsers() {
     return User.find().select('-password');
   }
+
+  async updateUserRole(userId: string, role: 'user' | 'admin') {
+    if (!['user', 'admin'].includes(role)) {
+      throw new AppError(400, 'Invalid role');
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: { role } },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      throw new AppError(404, 'User not found');
+    }
+
+    return user;
+  }
 }
 
 export const userService = new UserService(); 

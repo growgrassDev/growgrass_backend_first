@@ -87,4 +87,39 @@ router.put('/me', authenticateJwt, userController.updateProfile);
  */
 router.get('/', authenticateJwt, requireAdmin, userController.getAllUsers);
 
+/**
+ * @swagger
+ * /api/users/{userId}/role:
+ *   patch:
+ *     tags: [Users]
+ *     summary: Update user role (Admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [role]
+ *             properties:
+ *               role:
+ *                 type: string
+ *                 enum: [user, admin]
+ *     responses:
+ *       200:
+ *         description: Role updated successfully
+ *       403:
+ *         description: Forbidden - Admin only
+ *       404:
+ *         description: User not found
+ */
+router.patch('/:userId/role', authenticateJwt, requireAdmin, userController.updateUserRole);
+
 export { router as userRoutes }; 
