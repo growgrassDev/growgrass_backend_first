@@ -1,13 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import { postService } from '../services/post.service';
+import { IUser } from '../models/User';
 
 export class PostController {
   async createPost(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = (req.user as { _id: string })._id;
+      const user = req.user as IUser;
+      if (!user) throw new Error('Unauthorized');
       const post = await postService.createPost({
         ...req.body,
-        author: userId,
+        author: user._id.toString(),
       });
       res.status(201).json(post);
     } catch (error) {
@@ -35,10 +37,11 @@ export class PostController {
 
   async updatePost(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = (req.user as { _id: string })._id;
+      const user = req.user as IUser;
+      if (!user) throw new Error('Unauthorized');
       const post = await postService.updatePost(
         req.params.postId,
-        userId,
+        user._id.toString(),
         req.body
       );
       res.json(post);
@@ -49,8 +52,9 @@ export class PostController {
 
   async deletePost(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = (req.user as { _id: string })._id;
-      const result = await postService.deletePost(req.params.postId, userId);
+      const user = req.user as IUser;
+      if (!user) throw new Error('Unauthorized');
+      const result = await postService.deletePost(req.params.postId, user._id.toString());
       res.json(result);
     } catch (error) {
       next(error);
@@ -59,8 +63,9 @@ export class PostController {
 
   async getMyPosts(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = (req.user as { _id: string })._id;
-      const posts = await postService.getPostsByUser(userId);
+      const user = req.user as IUser;
+      if (!user) throw new Error('Unauthorized');
+      const posts = await postService.getPostsByUser(user._id.toString());
       res.json(posts);
     } catch (error) {
       next(error);
