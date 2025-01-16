@@ -3,9 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { config } from 'dotenv';
-import swaggerUi from 'swagger-ui-express';
 import { logger } from './config/logger';
-import { swaggerSpec } from './config/swagger';
 import passport from './config/passport';
 import connectDB from './config/database';
 import { validateEnv } from './config/validateEnv';
@@ -19,10 +17,7 @@ const env = validateEnv();
 const app = express();
 
 // Security middleware
-app.use(helmet({
-  contentSecurityPolicy: false,
-  crossOriginEmbedderPolicy: false,
-}));
+app.use(helmet());
 app.use(cors({
   origin: env.CORS_ORIGIN,
   credentials: true,
@@ -44,23 +39,12 @@ app.use((req, _res, next) => {
   logger.info('Incoming request:', {
     path: req.path,
     method: req.method,
-    query: req.query,
-    body: req.body,
-    headers: {
-      ...req.headers,
-      authorization: req.headers.authorization ? '[REDACTED]' : undefined
-    }
   });
   next();
 });
 
-// API Documentation
-app.use('/api-docs', swaggerUi.serve);
-app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
-  explorer: true,
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: "REST API Documentation",
-}));
+// Initialize passport
+app.use(passport.initialize());
 
 // Handle service worker requests
 app.get('/sw.js', (_req, res) => {
@@ -68,8 +52,17 @@ app.get('/sw.js', (_req, res) => {
   res.send('');
 });
 
-// Initialize passport
-app.use(passport.initialize());
+// Swagger documentation only in development
+if (process.env.NODE_ENV === 'development') {
+  const swaggerUi = require('swagger-ui-express');
+  const { swaggerSpec } = require('./config/swagger');
+  
+  app.use('/api-docs', swaggerUi.serve);
+  app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+    customSiteTitle: "REST API Documentation",
+  }));
+}
 
 // Mount main router
 app.use('/api', mainRouter);
@@ -81,67 +74,48 @@ app.use((_req, _res, next) => {
 
 // Global error handler
 app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  const errorDetails = {
-    name: err.name,
-    message: err.message,
-    stack: err.stack,
-    type: typeof err,
-    keys: Object.keys(err),
-    request: {
-      path: req.path,
-      method: req.method,
-      query: req.query,
-      body: req.body,
-      headers: {
-        ...req.headers,
-        authorization: req.headers.authorization ? '[REDACTED]' : undefined
-      },
-      url: req.url,
-      route: req.route,
-      params: req.params
-    }
-  };
+  // Ignore errors from certain paths
+  const ignorePaths = ['/sw.js', '/favicon.ico'];
+  if (!ignorePaths.includes(req.path)) {
+    // Log detailed error information
+    logger.error({
+      message: 'Error occurred',
+      error: {
+        name: err.name,
+        message: err.message,
+        stack: err.stack,
+        path: req.path,
+        method: req.method,
+        body: req.body,
+        query: req.query,
+        params: req.params,
+      }
+    });
+  }
 
-  // Log full error details
-  logger.error({
-    msg: 'Error occurred',
-    err,
-    context: errorDetails
-  });
-
-  // Handle specific error types
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
       status: 'error',
       message: err.message,
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     });
   }
 
+  // Handle other types of errors
   if (err instanceof SyntaxError) {
     return res.status(400).json({
       status: 'error',
-      message: 'Invalid JSON',
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+      message: 'Invalid JSON format'
     });
   }
 
-  if (err instanceof URIError) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'Invalid URI',
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
-    });
-  }
-
-  // Default error response
   return res.status(500).json({
     status: 'error',
     message: 'Internal server error',
     ...(process.env.NODE_ENV === 'development' && { 
-      error: err.toString(),
-      details: errorDetails
-    }),
+      error: err.message,
+      stack: err.stack 
+    })
   });
 });
 
