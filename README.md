@@ -99,6 +99,31 @@ bun run build
 - 👥 `GET /api/users` - ดูรายชื่อผู้ใช้ทั้งหมด (สำหรับ Admin)
   - Headers: `Authorization: Bearer <token>`
 
+### 📝 จัดการโพสต์ (Post Management)
+
+- 📝 `POST /api/posts` - สร้างโพสต์ใหม่
+  - Headers: `Authorization: Bearer <token>`
+  - Body: `{ title: string, content: string }`
+  - ผลลัพธ์: `Post`
+
+- 📚 `GET /api/posts` - ดูโพสต์ทั้งหมด
+  - ผลลัพธ์: `Post[]`
+
+- 📖 `GET /api/posts/{postId}` - ดูรายละเอียดโพสต์
+  - ผลลัพธ์: `Post`
+
+- ✏️ `PUT /api/posts/{postId}` - แก้ไขโพสต์ (เจ้าของโพสต์เท่านั้น)
+  - Headers: `Authorization: Bearer <token>`
+  - Body: `{ title?: string, content?: string }`
+  - ผลลัพธ์: `Post`
+
+- 🗑️ `DELETE /api/posts/{postId}` - ลบโพสต์ (เจ้าของโพสต์เท่านั้น)
+  - Headers: `Authorization: Bearer <token>`
+
+- 📱 `GET /api/posts/user/me` - ดูโพสต์ของตัวเอง
+  - Headers: `Authorization: Bearer <token>`
+  - ผลลัพธ์: `Post[]`
+
 ## 👑 การจัดการสิทธิ์ (Role Management)
 
 ### การตั้งค่า Admin คนแรก
@@ -417,3 +442,28 @@ Content-Type: application/json
   - View all users (`GET /api/users`)
   - Change user roles (`PATCH /api/users/{userId}/role`)
   - Access future admin-only features
+
+### 📚 Database Schema
+
+### Post Collection
+
+```typescript
+{
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  content: {
+    type: String,
+    required: true
+  },
+  author: {
+    type: ObjectId,
+    ref: 'User',
+    required: true
+  },
+  createdAt: Date,
+  updatedAt: Date
+}
+```
