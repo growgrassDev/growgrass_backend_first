@@ -12,6 +12,13 @@ interface AuthTokens {
   refreshToken: string;
 }
 
+interface GoogleProfile {
+  id: string;
+  emails?: Array<{ value: string; verified?: boolean }>;
+  displayName: string;
+  photos?: Array<{ value: string }>;
+}
+
 class AuthService {
   private readonly jwtSecret: string;
   private readonly jwtRefreshSecret: string;
@@ -54,21 +61,26 @@ class AuthService {
     return this.generateTokens(user);
   }
 
-  public async googleLogin(profile: any): Promise<AuthTokens> {
+  public async googleLogin(profile: GoogleProfile): Promise<AuthTokens> {
     const { id, emails, displayName, photos } = profile;
+
+    if (!emails?.[0]?.value) {
+      throw new Error('Email is required from Google profile');
+    }
+    const email = emails[0].value;
 
     let user = await User.findOne({ googleId: id });
     if (!user) {
-      user = await User.findOne({ email: emails[0].value });
+      user = await User.findOne({ email });
       if (user) {
         user.googleId = id;
         await user.save();
       } else {
         user = await User.create({
-          email: emails[0].value,
+          email,
           name: displayName,
           googleId: id,
-          avatar: photos[0]?.value,
+          avatar: photos?.[0]?.value || undefined,
         });
       }
     }

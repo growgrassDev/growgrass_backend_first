@@ -24,7 +24,7 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: function(this: IUser) {
+      required: function(this: IUser): boolean {
         return !this.googleId;
       },
       minlength: 6,
@@ -57,7 +57,7 @@ const userSchema = new Schema<IUser>(
 );
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function(next): Promise<void> {
   if (!this.isModified('password')) return next();
   
   try {

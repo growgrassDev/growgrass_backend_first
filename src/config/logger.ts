@@ -17,7 +17,7 @@ const developmentConfig = {
 const productionConfig = {
   level: 'info',
   formatters: {
-    level: (label: string) => {
+    level: (label: string): Record<string, string> => {
       return { level: label };
     },
   },

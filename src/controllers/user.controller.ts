@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { userService } from '../services/user.service';
 
 export class UserController {
-  async getProfile(req: Request, res: Response, next: NextFunction) {
+  async getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const userId = (req.user as unknown as { _id: string })._id;
       const user = await userService.getUserProfile(userId);
@@ -12,7 +12,7 @@ export class UserController {
     }
   }
 
-  async updateProfile(req: Request, res: Response, next: NextFunction) {
+  async updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const userId = (req.user as unknown as { _id: string })._id;
       const updateData = {
@@ -26,7 +26,7 @@ export class UserController {
     }
   }
 
-  async getAllUsers(req: Request, res: Response, next: NextFunction) {
+  async getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const users = await userService.getAllUsers();
       res.json(users);
@@ -35,7 +35,7 @@ export class UserController {
     }
   }
 
-  async updateUserRole(req: Request, res: Response, next: NextFunction) {
+  async updateUserRole(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { userId } = req.params;
       const { role } = req.body;

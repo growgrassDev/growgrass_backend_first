@@ -3,15 +3,15 @@ import { AppError } from '../utils/errors';
 import { Types } from 'mongoose';
 
 export class PostService {
-  async createPost(data: { title: string; content: string; author: string }) {
+  async createPost(data: { title: string; content: string; author: string }): Promise<IPost> {
     return Post.create(data);
   }
 
-  async getAllPosts() {
+  async getAllPosts(): Promise<IPost[]> {
     return Post.find().populate('author', 'name email');
   }
 
-  async getPostById(postId: string) {
+  async getPostById(postId: string): Promise<IPost | null> {
     const post = await Post.findById(postId).populate('author', 'name email');
     if (!post) {
       throw new AppError(404, 'Post not found');
@@ -19,7 +19,7 @@ export class PostService {
     return post;
   }
 
-  async updatePost(postId: string, userId: string, data: Partial<IPost>) {
+  async updatePost(postId: string, userId: string, data: Partial<IPost>): Promise<IPost | null> {
     const post = await Post.findById(postId);
     if (!post) {
       throw new AppError(404, 'Post not found');
@@ -36,7 +36,7 @@ export class PostService {
     ).populate('author', 'name email');
   }
 
-  async deletePost(postId: string, userId: string) {
+  async deletePost(postId: string, userId: string): Promise<{ message: string }> {
     const post = await Post.findById(postId);
     if (!post) {
       throw new AppError(404, 'Post not found');
@@ -50,7 +50,7 @@ export class PostService {
     return { message: 'Post deleted successfully' };
   }
 
-  async getPostsByUser(userId: string) {
+  async getPostsByUser(userId: string): Promise<IPost[]> {
     return Post.find({ author: new Types.ObjectId(userId) })
       .populate('author', 'name email');
   }

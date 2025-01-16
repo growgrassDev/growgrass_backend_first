@@ -11,9 +11,16 @@ declare module 'swagger-jsdoc' {
       description?: string;
     }>;
     components?: {
-      securitySchemes?: Record<string, any>;
+      securitySchemes?: Record<string, {
+        type: 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
+        description?: string;
+        name?: string;
+        in?: 'query' | 'header' | 'cookie';
+        scheme?: string;
+        bearerFormat?: string;
+      }>;
     };
-    security?: Array<Record<string, any>>;
+    security?: Array<Record<string, string[]>>;
   }
 
   interface Options {
@@ -21,6 +28,6 @@ declare module 'swagger-jsdoc' {
     apis: string[];
   }
 
-  function swaggerJsdoc(options: Options): any;
+  function swaggerJsdoc(options: Options): SwaggerDefinition;
   export = swaggerJsdoc;
 } 

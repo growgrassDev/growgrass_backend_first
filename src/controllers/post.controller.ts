@@ -3,7 +3,7 @@ import { postService } from '../services/post.service';
 import { IUser } from '../models/User';
 
 export class PostController {
-  async createPost(req: Request, res: Response, next: NextFunction) {
+  async createPost(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const user = req.user as IUser;
       if (!user) throw new Error('Unauthorized');
@@ -17,7 +17,7 @@ export class PostController {
     }
   }
 
-  async getAllPosts(_req: Request, res: Response, next: NextFunction) {
+  async getAllPosts(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const posts = await postService.getAllPosts();
       res.json(posts);
@@ -26,7 +26,7 @@ export class PostController {
     }
   }
 
-  async getPostById(req: Request, res: Response, next: NextFunction) {
+  async getPostById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const post = await postService.getPostById(req.params.postId);
       res.json(post);
@@ -35,7 +35,7 @@ export class PostController {
     }
   }
 
-  async updatePost(req: Request, res: Response, next: NextFunction) {
+  async updatePost(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const user = req.user as IUser;
       if (!user) throw new Error('Unauthorized');
@@ -50,7 +50,7 @@ export class PostController {
     }
   }
 
-  async deletePost(req: Request, res: Response, next: NextFunction) {
+  async deletePost(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const user = req.user as IUser;
       if (!user) throw new Error('Unauthorized');
@@ -61,7 +61,7 @@ export class PostController {
     }
   }
 
-  async getMyPosts(req: Request, res: Response, next: NextFunction) {
+  async getMyPosts(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const user = req.user as IUser;
       if (!user) throw new Error('Unauthorized');
