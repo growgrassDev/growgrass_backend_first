@@ -4,7 +4,7 @@
 // ```
 import mongoose from 'mongoose';
 
-async function testConnection() {
+async function testConnection(): Promise<void> {
   try {
     await mongoose.connect('mongodb+srv://ba86work:KIEAxuxQLWh6eFW9@cluster0.uk8fj2y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
     console.log('Connected successfully');
