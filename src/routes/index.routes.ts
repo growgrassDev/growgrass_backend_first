@@ -5,13 +5,36 @@ import { postRoutes } from './post.routes';
 
 const router = Router();
 
-// Welcome route
+// Welcome route with API information
 router.get('/', (_req, res) => {
   res.json({
     status: 'success',
-    message: 'Welcome to the API',
+    message: 'ยินดีต้อนรับสู่ API',
     version: '1.0.0',
-    docs: '/api-docs'
+    endpoints: {
+      documentation: '/api-docs',
+      auth: {
+        register: '/api/auth/register',
+        login: '/api/auth/login',
+        googleLogin: '/api/auth/google',
+        refreshToken: '/api/auth/refresh-token',
+        logout: '/api/auth/logout'
+      },
+      users: {
+        profile: '/api/users/me',
+        updateProfile: '/api/users/me',
+        allUsers: '/api/users'
+      },
+      posts: {
+        create: '/api/posts',
+        all: '/api/posts',
+        single: '/api/posts/:postId',
+        update: '/api/posts/:postId',
+        delete: '/api/posts/:postId',
+        myPosts: '/api/posts/user/me'
+      }
+    },
+    healthCheck: '/api/health'
   });
 });
 
@@ -19,8 +42,9 @@ router.get('/', (_req, res) => {
 router.get('/health', (_req, res) => {
   res.json({
     status: 'success',
-    message: 'OK',
-    timestamp: new Date().toISOString()
+    message: 'ระบบทำงานปกติ',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV
   });
 });
 

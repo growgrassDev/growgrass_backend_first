@@ -9,6 +9,8 @@ import connectDB from './config/database';
 import { validateEnv } from './config/validateEnv';
 import { AppError } from './utils/errors';
 import { mainRouter } from './routes/index.routes';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
 
 // Load and validate environment variables
 config();
@@ -46,6 +48,18 @@ app.use((req, _res, next) => {
 // Initialize passport
 app.use(passport.initialize());
 
+// Root route
+app.get('/', (_req, res) => {
+  res.json({
+    status: 'success',
+    message: 'ยินดีต้อนรับสู่ API',
+    version: '1.0.0',
+    apiHealth: '/api/health',
+    apiDocs: '/api-docs',
+    apiEndpoint: '/api'
+  });
+});
+
 // Handle service worker requests
 app.get('/sw.js', (_req, res) => {
   res.set('Content-Type', 'application/javascript');
@@ -54,9 +68,6 @@ app.get('/sw.js', (_req, res) => {
 
 // Swagger documentation only in development
 if (process.env.NODE_ENV === 'development') {
-  const swaggerUi = require('swagger-ui-express');
-  const { swaggerSpec } = require('./config/swagger');
-  
   app.use('/api-docs', swaggerUi.serve);
   app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
     explorer: true,

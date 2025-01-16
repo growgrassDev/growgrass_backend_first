@@ -1,6 +1,6 @@
 import pino from 'pino';
 
-export const logger = pino({
+const developmentConfig = {
   transport: {
     target: 'pino-pretty',
     options: {
@@ -11,11 +11,20 @@ export const logger = pino({
       errorProps: '*'
     },
   },
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-  serializers: {
-    err: pino.stdSerializers.err,
-    error: pino.stdSerializers.err,
-    req: pino.stdSerializers.req,
-    res: pino.stdSerializers.res
-  }
-}); 
+  level: 'debug'
+};
+
+const productionConfig = {
+  level: 'info',
+  formatters: {
+    level: (label: string) => {
+      return { level: label };
+    },
+  },
+};
+
+export const logger = pino(
+  process.env.NODE_ENV === 'production' 
+    ? productionConfig 
+    : developmentConfig
+); 
